@@ -10,7 +10,7 @@ Create table Employee (
 );
 
 Create table Member (
-    member_id int primary key,
+    member_id serial primary key,
     first_name varchar(50),
     last_name varchar(50),
     email varchar(100),
@@ -54,6 +54,9 @@ CREATE TABLE Class (
     class_id INT PRIMARY KEY, -- Vừa là PK, vừa là FK
     maximum_students INT NOT NULL,
     information varchar(50),
+    time_begin time,
+    time_end generated always as(time_begin + interval'1 hour') stored,
+    duration_in_months INT NOT NULL,
     room_id int,
     FOREIGN KEY (room_id) REFERENCES  room(room_id),
     FOREIGN KEY (class_id) REFERENCES service(service_id) ON DELETE CASCADE
