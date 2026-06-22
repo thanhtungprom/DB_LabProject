@@ -54,6 +54,7 @@ CREATE TABLE Class (
     class_id INT PRIMARY KEY, -- Vừa là PK, vừa là FK
     maximum_students INT NOT NULL,
     information varchar(50),
+    room_id int,
     FOREIGN KEY (room_id) REFERENCES  room(room_id),
     FOREIGN KEY (class_id) REFERENCES service(service_id) ON DELETE CASCADE
 );
@@ -77,7 +78,7 @@ Create table Payment (
     service_id INT REFERENCES service(service_id), -- Trỏ thẳng về Service
     total_price decimal(12,2),
     foreign key(member_id) references Member(member_id),
-    foreign key(staff_id) references Staff(staff_id)
+    foreign key(staff_id) references Employee(employee_id)
 );
 
 CREATE TABLE Payment_detail (
@@ -100,17 +101,17 @@ Create table Coach_Checkin (
     coach_id int,
     class_id int,
     date date,
-    primary key (coach_id,shift_id),
+    primary key (coach_id,class_id),
     present varchar(20) check(present in('yes','execute_absent','absent')),     -- Có mặt, vắng mặt không phép, vắng mặt có phép
-    foreign key(coach_id) references Coach(coach_id),
-    foreign key(shift_id) references Shift(shift_id)
+    foreign key(coach_id) references Employee(employee_id),
+    foreign key(class_id) references Class(class_id)
 );
 
 create table Shift (
-    shift_id int primary key identity(1,1),
+    shift_id serial primary key,
     shift_number int check(shift_number in(1,2,3,4)),
     time_begin time,
-    time_end time = time_begin + 3
+    time_end time GENERATED ALWAYS AS (time_begin + interval '2 hours') STORED
 );
 
 Create table Staff_Checkin (
@@ -118,7 +119,7 @@ Create table Staff_Checkin (
     shift_id int,
     date date,
     present varchar(20) check(present in('yes','execute_absent','absent')),     -- Có mặt, vắng mặt không phép, vắng mặt có phép
-    foreign key(staff_id) references Staff(staff_id),
+    foreign key(staff_id) references Employee(employee_id),
     foreign key(shift_id) references Shift(shift_id)
 );
 
@@ -133,12 +134,6 @@ create table Device (
     date_bought date
 );
 
-create table Shift (
-    shift_id int primary key identity(1,1),
-    shift_number int check(shift_number in(1,2,3)),
-    time_begin time,
-    time_end time = time_begin + 2
-);
 
 Create table Room_Device (
     room_id int,
@@ -153,7 +148,7 @@ Create table Fee (
     water_cost decimal(12,2),
     power_cost decimal(12,2),
     other_cost decimal(12,2),
-    total_cost generated always as (water_cost + power_cost + other_cost) stored,
+    total_cost decimal(12,2) GENERATED ALWAYS AS (water_cost + power_cost + other_cost) STORED,
     pay_date date
 );
 
