@@ -46,7 +46,7 @@ CREATE TABLE Package (
     duration_in_months INT NOT NULL,
     information varchar(50),
     room_id int,
-    FOREIGN KEY (room_key) REFERENCES  room(room_id),
+    FOREIGN KEY (room_id) REFERENCES  room(room_id),
     FOREIGN KEY (service_id) REFERENCES service(service_id) ON DELETE CASCADE
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE Class (
     class_id INT PRIMARY KEY, -- Vừa là PK, vừa là FK
     maximum_students INT NOT NULL,
     information varchar(50),
-    FOREIGN KEY (room_key) REFERENCES  room(room_id),
+    FOREIGN KEY (room_id) REFERENCES  room(room_id),
     FOREIGN KEY (class_id) REFERENCES service(service_id) ON DELETE CASCADE
 );
 
